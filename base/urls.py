@@ -3,11 +3,12 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from base.utils import log_function_call
 
 urlpatterns = [
     path('', views.index, name='index'),  # Home page
     path('products/', views.Products, name='products'),  # Products page
-    path('library/', views.Librery, name='library'),  # Library page
+    path('librery/', views.Librery, name='librery'),  # librery page
     path('bookcategories/', views.BookCategorys, name='book_categories'),  # Book categories page
     path('login/', views.login_view, name='login'),  # Login page
     path('register/', views.register_view, name='register'),  # Registration page

@@ -16,7 +16,6 @@ from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -27,7 +26,6 @@ SECRET_KEY = 'django-insecure-o4+b!4f!qq!x@hvmis_vehhye9fv41kw#v1y4sh&ity!l_t^-y
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -87,7 +85,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myproj.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -97,7 +94,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -117,7 +113,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -129,7 +124,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
@@ -139,4 +133,36 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 CORS_ALLOW_ALL_ORIGINS = True
+
+LOGGING = { 
+    'version': 1, 
+    'disable_existing_loggers': False, 
+    'handlers': { 
+        'file': { 
+            'level': 'INFO', 
+            'class': 'logging.FileHandler', 
+            'filename': 'logs/django_logs.json', 
+            'formatter': 'json', 
+        }, 
+    }, 
+    'formatters': { 
+        'json': { 
+            '()': 'pythonjsonlogger.jsonlogger.JsonFormatter', 
+            'format': '%(asctime)s %(name)s %(levelname)s %(message)s %(filename)s %(lineno)d %(funcName)s %(args)s %(result)s', 
+        }, 
+    }, 
+    'loggers': { 
+        'django': { 
+            'handlers': ['file'], 
+            'level': 'DEBUG', 
+            'propagate': True, 
+        }, 
+        'django.db.backends': { 
+            'handlers': ['file'], 
+            'level': 'DEBUG', 
+            'propagate': True, 
+        }, 
+    }, 
+}

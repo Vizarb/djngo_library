@@ -3,10 +3,13 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+from django.views.decorators.csrf import csrf_protect
 from rest_framework.decorators import api_view
 from rest_framework import status
 from .models import Product, Book, BookCategory
 from .serializer import ProductSerializer, BookSerializer, BookCatagorySerializer
+from base.utils import log_function_call
 
 @api_view(['GET'])
 def index(req):
@@ -27,6 +30,8 @@ def BookCategorys(req):
     all_book_catagorey = BookCatagorySerializer(BookCategory.objects.all(), many=True).data
     return JsonResponse(all_book_catagorey, safe=False)
 
+@log_function_call
+@csrf_protect
 @api_view(['POST'])
 def login_view(request):
     username = request.data.get('username')
@@ -39,23 +44,27 @@ def login_view(request):
     else:
         return JsonResponse({'message': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
+@log_function_call
+@csrf_protect
 @api_view(['POST'])
 def register_view(request):
     username = request.data.get('username')
     password = request.data.get('password')
     email = request.data.get('email')
-    
+
     try:
-        user = User.objects.create_user(username=username, password=password, email=email)
+        user = User.objects.create_user(username=username, password=make_password(password), email=email)
         return JsonResponse({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
     except Exception as e:
         return JsonResponse({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
+    
+@log_function_call
 @api_view(['POST'])
 def logout_view(request):
     logout(request)
     return JsonResponse({'message': 'Logout successful'}, status=status.HTTP_200_OK)
 
+@log_function_call
 @api_view(['GET'])
 def check_authentication(request):
     if request.user.is_authenticated:
