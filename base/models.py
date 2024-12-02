@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
+
 
 # Create your models here.
 class Product(models.Model):
@@ -30,3 +33,14 @@ class Book(models.Model):
 
     def __str__(self):
         return f"{self.title} by {self.author}"
+    
+
+
+
+class LoginAttempt(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    attempt_time = models.DateTimeField(default=timezone.now)
+    success = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} - {'Success' if self.success else 'Failure'} at {self.attempt_time}"

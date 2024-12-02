@@ -1,7 +1,6 @@
 import logging
 from logging.handlers import RotatingFileHandler
 from pythonjsonlogger import jsonlogger
-import functools
 
 # Set up the logger
 logger = logging.getLogger('jsonLogger')
@@ -15,7 +14,6 @@ logger.setLevel(logging.INFO)
 
 # Decorator to log function calls and results
 def log_function_call(func):
-    @functools.wraps(func)
     def wrapper(*args, **kwargs):
         # Log the function call
         logger.info(f'Calling {func.__name__}', extra={'log_args': args, 'log_kwargs': kwargs})

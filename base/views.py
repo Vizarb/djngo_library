@@ -4,9 +4,11 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view
 from rest_framework import status
+
+from base.utils_copy import track_failed_login_attempts
 from .models import Product, Book, BookCategory
 from .serializer import ProductSerializer, BookSerializer, BookCatagorySerializer
 from base.utils import log_function_call
@@ -30,8 +32,7 @@ def BookCategorys(req):
     all_book_catagorey = BookCatagorySerializer(BookCategory.objects.all(), many=True).data
     return JsonResponse(all_book_catagorey, safe=False)
 
-@log_function_call
-@csrf_protect
+@track_failed_login_attempts
 @api_view(['POST'])
 def login_view(request):
     username = request.data.get('username')
@@ -45,7 +46,6 @@ def login_view(request):
         return JsonResponse({'message': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 @log_function_call
-@csrf_protect
 @api_view(['POST'])
 def register_view(request):
     username = request.data.get('username')
@@ -59,6 +59,7 @@ def register_view(request):
         return JsonResponse({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
 @log_function_call
+@login_required
 @api_view(['POST'])
 def logout_view(request):
     logout(request)
